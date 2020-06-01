@@ -30,3 +30,19 @@
 *.exe
 *.out
 *.app
+
+# Cache directory
+cache/
+
+#Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+#IDEs
+*~
+\#*\#
+.vscode/
