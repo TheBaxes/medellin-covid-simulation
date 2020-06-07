@@ -11,32 +11,42 @@
 //
 int main( int argc, char **argv )
 {   
-    int navg,nabsavg=0,numthreads; 
-    double dmin, absmin=1.0,davg,absavg=0.0;
+    
 	
     if( find_option( argc, argv, "-h" ) >= 0 )
     {
         printf( "Options:\n" );
-        printf( "-h to see this help\n" );
-        printf( "-n <int> to set number of particles\n" );
-        printf( "-o <filename> to specify the output file name\n" );
-        printf( "-s <filename> to specify a summary file name\n" ); 
-        printf( "-no turns off all correctness checks and particle output\n");   
+        printf( "-h             to see this help\n" );
+        printf( "-n <int>       to set the number of particles\n" );
+        printf( "--hours <int>  to set the number of hours that will be simulated\n" );
+        printf( "--stats        to specify if stats will be collected during run\n" );
+        printf( "-o <filename>  to specify the output file name\n" );
         return 0;
     }
 
-    int n = read_int( argc, argv, "-n", 1000 );
-
-    char *savename = read_string( argc, argv, "-o", NULL );
-    char *sumname = read_string( argc, argv, "-s", NULL );
-
-    FILE *fsave = savename ? fopen( savename, "w" ) : NULL;
-    FILE *fsum = sumname ? fopen ( sumname, "a" ) : NULL;      
-
+     int n = read_int( argc, argv, "-n", 100 );
+    int PARAM_HOURS_TO_SIMULATE = read_int( argc, argv, "--hours", 1 );
+    int NSTEPS = (int) floor((VEL_HUMAN/MOVEMENT_DELTA)*PARAM_HOURS_TO_SIMULATE*3600);
+    
     particle_t *particles = (particle_t*) malloc( n * sizeof(particle_t) );
-    set_size( n );
-    init_particles( n, particles );
+    floydSolution floyd;
+    std::vector<int> interesNodes;
 
+    double simulation_time = read_timer( );
+    init_particles( n, particles, floyd, interesNodes);
+    simulation_time = read_timer( ) - simulation_time;
+    printf("n = %d, init particles time = %g seconds\n", n, simulation_time);
+    
+    int nPOI = interesNodes.size();
+    //int nNodes = sizeof(floyd.cost[0]) / sizeof(floyd.cost[0][0]); 
+     
+    char *savename = read_string( argc, argv, "-o", NULL );
+    FILE *fsave = savename ? fopen( savename, "w" ) : NULL;
+    if(fsave){
+        // save params of the run     
+        fprintf(fsave, "n_particles=%d,n_poi=%d,nsteps=%d,init_infect=%f,going_out=%f,prob_infection=%f\n", n, nPOI, NSTEPS, PARAM_RATE_INIT_INFECT, PARAM_GOING_OUT ,PARAM_PROB_INFECTION);
+        fprintf(fsave,"ITERATIONS,N_INFECTED\n");
+    }
     //Create grid
     int sizeGrid = (n/cutoff) +1; 
     grid_t grid;
