@@ -212,7 +212,7 @@ std::tuple<std::vector<int>, std::vector<int> > init_nodes(){
 }
 
 void particle_is_going_out(particle_t &p){
-    if(((double) rand() / (RAND_MAX)) < PARAM_GOING_OUT){
+    if(((double) rand() / (RAND_MAX)) < PARAM_GOING_OUT*(p.socialDiscipline/100)){
             p.goingout = true;
     }
     else{
@@ -298,7 +298,17 @@ void init_particles( int n, particle_t *p, floydSolution &solution,  std::vector
         }
 
         // Social discipline of the person, a number of 0 to 100 with uniform distribution
-        p[i].socialDiscipline = rand()%100;
+        float valDiscipline = rand()%100;
+        if (valDiscipline>50.0){
+           p[i].socialDiscipline = 95.0;
+        }
+        //else if(valDiscipline<30.0){
+        //   p[i].socialDiscipline = 50.0;
+        //}
+        else{
+          p[i].socialDiscipline = 5.0;
+        }
+
 
         // Is the person going out of their node? 
         particle_is_going_out(p[i]);
@@ -326,7 +336,7 @@ void apply_interaction( particle_t &p_a, particle_t &p_b)
     if( !p_a.infected || p_b.infected)
     return;
 
-    double prob_infection_b = 0.4*((0.75*p_a.socialDiscipline) + (0.25*p_b.socialDiscipline)) + 0.6*PARAM_PROB_INFECTION;
+    double prob_infection_b = ((p_a.socialDiscipline*p_b.socialDiscipline)/10000)*PARAM_PROB_INFECTION;
     if(((double) rand() / (RAND_MAX)) < prob_infection_b){
             p_b.infected = true;
     }

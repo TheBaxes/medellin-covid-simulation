@@ -66,7 +66,7 @@ int main( int argc, char **argv )
         for( int i = 0; i < n; ++i )
         {
             for (int j = 0; j < n; ++j )
-				apply_interaction( particles[i], particles[j]);
+				apply_interaction( particles[i], particles[j] );
         }
  
         //

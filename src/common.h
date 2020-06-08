@@ -11,9 +11,9 @@ inline int max( int a, int b ) { return a > b ? a : b; }
 const float VEL_HUMAN = 1.39; // 1.38 m/s
 const float MOVEMENT_DELTA = 80; //80 Meters -> the length of a block
 const int SAVEFREQ = 5;
-const double PARAM_RATE_INIT_INFECT = 0.05 ; // ratio between infected and not infected in the beginning of the simulation
-const double PARAM_GOING_OUT = 0.5; // prob a given particle is going out
-const double PARAM_PROB_INFECTION = 0.0000001; // prob of infection in a interaction
+const double PARAM_RATE_INIT_INFECT = 0.05; // ratio between infected and not infected in the beginning of the simulation
+const double PARAM_GOING_OUT = 0.4; // prob a given particle is going out
+const double PARAM_PROB_INFECTION = 0.01; // prob of infection in a interaction
 
 //
 // Solution of floyd algorithm
